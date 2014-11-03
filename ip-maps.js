@@ -1,17 +1,16 @@
-Tasks = new Mongo.Collection("tasks");
+IPAddresses = new Mongo.Collection("ipaddresses");
 
 if (Meteor.isClient) {
   // This code only runs on the client
   Template.body.helpers({
-    tasks: function () {
-      return Tasks.find({});
+    ipaddresses: function () {
+      return IPAddresses.find({});
     }
   });
 
   Template.body.events({
     "submit .new-task": function (event) {
       // This function is called when the new task form is submitted
-
       var text = event.target.text.value;
 
       IPMapper.parseAndPlotIPAddress(text);
@@ -25,10 +24,10 @@ if (Meteor.isClient) {
 
   Template.task.events({
     "click .delete": function () {
-      Tasks.remove(this._id);
-      
+      IPAddresses.remove(this._id);
+      // Re-initialize map to clear all markers (TODO: remove specific marker)
       IPMapper.initializeMap("map");
-      var ips = Tasks.find().fetch();
+      var ips = IPAddresses.find().fetch();
       _.each(ips, function(ip) {
           IPMapper.addIPMarker(ip.latitude, ip.longitude, ip.contentString);
       });
@@ -42,24 +41,13 @@ if (Meteor.isClient) {
 
     // Deps.autorun(function() {
       // Iterate through the existing IP addresses and plot
-      // var locs = ["11.11.11.11", "8.8.8.8"];
-      // Meteor.subscribe("tasks")
-      var ips = Tasks.find().fetch();
+      var ips = IPAddresses.find().fetch();
       _.each(ips, function(ip) {
         IPMapper.addIPMarker(ip.latitude, ip.longitude, ip.contentString);
       });
-    // });
   }
-
-
-  // Template.ipinput.events({
-  //   'click button':function(ip) {
-  //     }
-  // });
-
   
-} // end Client code
-
+} // end Client-side code
 
 
 if (Meteor.isServer) {

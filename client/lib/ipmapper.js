@@ -3,7 +3,7 @@ IPMapper = {
 	latlngbound: null,
 	infowindow: null,
 	// baseUrl: "http://freegeoip.net/json/",
-	baseUrl: "http://www.telize.com/geoip/", //46.19.37.108?callback=getgeoip"
+	baseUrl: "http://www.telize.com/geoip/",
 
 	initializeMap: function(mapId){
 		IPMapper.latlngbound = new google.maps.LatLngBounds();
@@ -42,7 +42,7 @@ IPMapper = {
 					$.each(data, function(key, val) {
 						contentString += '<b>' + key.toUpperCase().replace("_", " ") + ':</b> ' + val + '<br />';
 					});
-					Tasks.insert({
+					IPAddresses.insert({
 			          ip: ip,
 			          createdAt: new Date(), // current time
 			          latitude: data.latitude,
