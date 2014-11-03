@@ -39,12 +39,13 @@ if (Meteor.isClient) {
     if (! Session.get('map'))
       IPMapper.initializeMap("map");
 
-    // Deps.autorun(function() {
+    Deps.autorun(function() {
       // Iterate through the existing IP addresses and plot
       var ips = IPAddresses.find().fetch();
       _.each(ips, function(ip) {
         IPMapper.addIPMarker(ip.latitude, ip.longitude, ip.contentString);
       });
+    });
   }
   
 } // end Client-side code
