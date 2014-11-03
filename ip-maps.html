@@ -1,0 +1,49 @@
+<head>
+  <title>ip-maps</title>
+    <!-- <title>IP Address geocoding on Google Maps</title> -->
+<!--     // <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script> -->
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>IP Mapper</h1>
+
+      <form class="new-task">
+        <input type="text" name="text" placeholder="Type to add new IP Addresses" />
+      </form>
+    </header>
+
+    {{> ipmap}}
+    <ul>
+      {{#each tasks}}
+        {{> task}}
+      {{/each}}
+    </ul>
+
+  </div>
+    
+
+</body>
+
+<template name="task">
+  <li class="{{#if checked}}checked{{/if}}">
+    <button class="delete">&times;</button>
+
+    <span class="text">{{text}}</span>
+  </li>
+</template>
+
+
+<template name="ipmap">
+
+	<div id="map" style="height: 500px;"></div>
+</template>
+<!-- 
+<template name="ipinput">
+	<input id="ip" name="ip" type="text" />
+	<button onclick="IPMapper.addIPMarker($('#ip').val());">Geocode</button>	
+</template> -->
+
+
