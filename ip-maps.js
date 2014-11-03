@@ -14,19 +14,7 @@ if (Meteor.isClient) {
 
       var text = event.target.text.value;
 
-      ipRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
-      if($.trim(text) != '' && ipRegex.test(text)){ //validate IP Address format
-
-        Tasks.insert({
-          text: text,
-          createdAt: new Date() // current time
-          // latitude: 
-          // longitude: 
-        });
-      }
-      else {
-        alert(text + " is not a valid IP address.")
-      }
+      IPMapper.parseAndPlotIPAddress(text);
       // Clear form
       event.target.text.value = "";
 
@@ -38,6 +26,12 @@ if (Meteor.isClient) {
   Template.task.events({
     "click .delete": function () {
       Tasks.remove(this._id);
+      
+      IPMapper.initializeMap("map");
+      var ips = Tasks.find().fetch();
+      _.each(ips, function(ip) {
+          IPMapper.addIPMarker(ip.latitude, ip.longitude, ip.contentString);
+      });
     }
   });
 
@@ -46,23 +40,27 @@ if (Meteor.isClient) {
     if (! Session.get('map'))
       IPMapper.initializeMap("map");
 
-    Deps.autorun(function() {
+    // Deps.autorun(function() {
       // Iterate through the existing IP addresses and plot
       // var locs = ["11.11.11.11", "8.8.8.8"];
+      // Meteor.subscribe("tasks")
       var ips = Tasks.find().fetch();
       _.each(ips, function(ip) {
-        IPMapper.addIPMarker(ip.text);
-
+        IPMapper.addIPMarker(ip.latitude, ip.longitude, ip.contentString);
       });
-    });
+    // });
   }
+
 
   // Template.ipinput.events({
   //   'click button':function(ip) {
   //     }
   // });
 
+  
 } // end Client code
+
+
 
 if (Meteor.isServer) {
   Meteor.startup(function () {

@@ -4,7 +4,7 @@ IPMapper = {
 	infowindow: null,
 	// baseUrl: "http://freegeoip.net/json/",
 	baseUrl: "http://www.telize.com/geoip/", //46.19.37.108?callback=getgeoip"
-	
+
 	initializeMap: function(mapId){
 		IPMapper.latlngbound = new google.maps.LatLngBounds();
 		var latlng = new google.maps.LatLng(0, 0);
@@ -31,34 +31,46 @@ IPMapper = {
 			IPMapper.addIPMarker(ipArray[i]);
 		}
 	},
-	addIPMarker: function(ip){
+	parseAndPlotIPAddress: function(ip){
 		ipRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
 		if($.trim(ip) != '' && ipRegex.test(ip)){ //validate IP Address format
 			var url = encodeURI(IPMapper.baseUrl + ip + "?callback=?"); //"?callback=?"); //geocoding url
 			$.getJSON(url, function(data) { //get Geocoded JSONP data
 				if($.trim(data.latitude) != '' && data.latitude != '0' && !isNaN(data.latitude)){ //Geocoding successfull
-					var latitude = data.latitude;
-					var longitude = data.longitude;
+
 					var contentString = "";
 					$.each(data, function(key, val) {
 						contentString += '<b>' + key.toUpperCase().replace("_", " ") + ':</b> ' + val + '<br />';
 					});
-					var latlng = new google.maps.LatLng(latitude, longitude);
-					var marker = new google.maps.Marker({ //create Map Marker
-						map: IPMapper.map,
-						draggable: false,
-						position: latlng
-					});
-					IPMapper.placeIPMarker(marker, latlng, contentString); //place Marker on Map
+					Tasks.insert({
+			          ip: ip,
+			          createdAt: new Date(), // current time
+			          latitude: data.latitude,
+			          longitude: data.longitude,
+			          contentString: contentString,
+			        });
+
+			        IPMapper.addIPMarker(data.latitude, data.longitude, contentString)
 				} else {
 					IPMapper.logError('IP Address geocoding failed!');
 					$.error('IP Address geocoding failed!');
-				}
-			});
-		} else {
+					}
+				});
+		}
+		else {
 			IPMapper.logError('Invalid IP Address!');
 			$.error('Invalid IP Address!');
 		}
+		
+	},
+	addIPMarker: function(latitude, longitude, contentString){
+		var latlng = new google.maps.LatLng(latitude, longitude);
+		var marker = new google.maps.Marker({ //create Map Marker
+			map: IPMapper.map,
+			draggable: false,
+			position: latlng
+		});
+		IPMapper.placeIPMarker(marker, latlng, contentString); //place Marker on Map
 	},
 	placeIPMarker: function(marker, latlng, contentString){ //place Marker on Map
 		marker.setPosition(latlng);
