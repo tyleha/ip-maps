@@ -9,20 +9,20 @@
   <div class="container">
     <header>
       <h1>IP Mapper</h1>
-      <form class="new-task">
+      <form class="new-ip">
         <input type="text" name="text" placeholder="Type to add new IP Addresses" />
       </form>
     </header>
     {{> ipmap}}
     <ul>
-      {{#each tasks}}
-        {{> task}}
+      {{#each ipaddresses}}
+        {{> iplist}}
       {{/each}}
     </ul>
   </div>
 </body>
 
-<template name="task">
+<template name="iplist">
   <li class="{{#if checked}}checked{{/if}}">
     <button class="delete">&times;</button>
     <span class="text">{{ip}}</span>

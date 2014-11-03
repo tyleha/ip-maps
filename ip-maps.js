@@ -9,8 +9,8 @@ if (Meteor.isClient) {
   });
 
   Template.body.events({
-    "submit .new-task": function (event) {
-      // This function is called when the new task form is submitted
+    "submit .new-ip": function (event) {
+      // This function is called when the new IP address form is submitted
       var text = event.target.text.value;
 
       IPMapper.parseAndPlotIPAddress(text);
@@ -22,7 +22,7 @@ if (Meteor.isClient) {
     }
   });
 
-  Template.task.events({
+  Template.iplist.events({
     "click .delete": function () {
       IPAddresses.remove(this._id);
       // Re-initialize map to clear all markers (TODO: remove specific marker)
