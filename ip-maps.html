@@ -9,8 +9,9 @@
   <div class="container">
     <header>
       <h1>IP Mapper</h1>
+      <h4>by Tyler Hartley</h4>
       <form class="new-ip">
-        <input type="text" name="text" placeholder="Type to add new IP Addresses" />
+        <input type="text" name="text" placeholder="Type to add new IP addresses, separated by commas" />
       </form>
     </header>
     {{> ipmap}}
@@ -25,7 +26,7 @@
 <template name="iplist">
   <li class="{{#if checked}}checked{{/if}}">
     <button class="delete">&times;</button>
-    <span class="text">{{ip}}</span>
+    <span class="text">{{ip}} - {{#if city}}{{city}}, {{/if}}{{country}}</span>
   </li>
 </template>
 

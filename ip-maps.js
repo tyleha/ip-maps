@@ -12,8 +12,11 @@ if (Meteor.isClient) {
     "submit .new-ip": function (event) {
       // This function is called when the new IP address form is submitted
       var text = event.target.text.value;
-
-      IPMapper.parseAndPlotIPAddress(text);
+      var addresses = text.split(',');
+      _.each(addresses, function(addr) {
+        IPMapper.parseAndPlotIPAddress(addr);
+      });
+      
       // Clear form
       event.target.text.value = "";
 
@@ -38,6 +41,7 @@ if (Meteor.isClient) {
 
     if (! Session.get('map'))
       IPMapper.initializeMap("map");
+      Session.set('map', true)
 
     Deps.autorun(function() {
       // Iterate through the existing IP addresses and plot

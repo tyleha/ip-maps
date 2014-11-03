@@ -24,16 +24,10 @@ IPMapper = {
 			IPMapper.map.panToBounds(IPMapper.latlngbound);
 		});
 	},
-	addIPArray: function(ipArray){
-		ipArray = IPMapper.uniqueArray(ipArray); //get unique array elements
-		//add Map Marker for each IP
-		for (var i = 0; i < ipArray.length; i++){
-			IPMapper.addIPMarker(ipArray[i]);
-		}
-	},
 	parseAndPlotIPAddress: function(ip){
+		ip = $.trim(ip);
 		ipRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
-		if($.trim(ip) != '' && ipRegex.test(ip)){ //validate IP Address format
+		if(ip != '' && ipRegex.test(ip)){ //validate IP Address format
 			var url = encodeURI(IPMapper.baseUrl + ip + "?callback=?"); //"?callback=?"); //geocoding url
 			$.getJSON(url, function(data) { //get Geocoded JSONP data
 				if($.trim(data.latitude) != '' && data.latitude != '0' && !isNaN(data.latitude)){ //Geocoding successfull
@@ -48,6 +42,8 @@ IPMapper = {
 			          latitude: data.latitude,
 			          longitude: data.longitude,
 			          contentString: contentString,
+			          city: data.city,
+			          country: data.country,
 			        });
 
 			        IPMapper.addIPMarker(data.latitude, data.longitude, contentString)
@@ -85,16 +81,6 @@ IPMapper = {
 		IPMapper.infowindow.close()
 		IPMapper.infowindow.setContent(contentString);
 		IPMapper.infowindow.open(IPMapper.map, marker);
-	},
-	uniqueArray: function(inputArray){ //return unique elements from Array
-		var a = [];
-		for(var i=0; i<inputArray.length; i++) {
-			for(var j=i+1; j<inputArray.length; j++) {
-				if (inputArray[i] === inputArray[j]) j = ++i;
-			}
-			a.push(inputArray[i]);
-		}
-		return a;
 	},
 	logError: function(error){
 		if (typeof console == 'object') { console.error(error); }
